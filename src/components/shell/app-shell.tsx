@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { ChevronDown, LogOut, Menu, PanelLeftClose, PanelLeftOpen, User, X } from "lucide-react";
 import { BrandLogo } from "@/components/brand-logo";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { NAV } from "@/components/shell/nav";
 import { NotificationBell } from "@/components/shell/notification-bell";
 import { RealtimeRefresher } from "@/components/shell/realtime-refresher";
@@ -46,8 +47,8 @@ export function AppShell({ user, children }: { user: ShellUser; children: React.
     exact ? pathname === href : pathname === href || pathname.startsWith(href + "/");
 
   const sidebar = (compact: boolean) => (
-    <nav className="flex h-full flex-col bg-brand text-brand-contrast">
-      <div className={cn("flex h-16 items-center border-b border-white/10 px-4", compact && "justify-center px-2")}>
+    <nav className="flex h-full flex-col bg-[var(--sidebar-bg)] text-[var(--sidebar-ink)] transition-colors duration-300">
+      <div className={cn("flex h-16 items-center border-b border-[var(--sidebar-border)] px-4", compact && "justify-center px-2")}>
         <Link href={base} aria-label="Dashboard" className="flex items-center gap-2">
           <BrandLogo variant="light" className={compact ? "h-6" : "h-7"} />
         </Link>
@@ -56,7 +57,7 @@ export function AppShell({ user, children }: { user: ShellUser; children: React.
         {NAV[user.role].map((group, gi) => (
           <div key={gi}>
             {group.label && !compact && (
-              <p className="mb-2 px-3 text-[10px] font-mono uppercase tracking-[0.22em] text-white/45">{group.label}</p>
+              <p className="mb-2 px-3 text-[10px] font-mono uppercase tracking-[0.22em] text-[var(--sidebar-muted)]">{group.label}</p>
             )}
             <ul className="space-y-1">
               {group.items.map((item) => {
@@ -72,8 +73,8 @@ export function AppShell({ user, children }: { user: ShellUser; children: React.
                         "flex items-center gap-3 rounded-brand px-3 py-2.5 text-xs font-mono uppercase tracking-[0.14em] transition-all duration-200",
                         compact && "justify-center px-2",
                         active
-                          ? "bg-white/15 font-semibold text-white shadow-xs border-l-2 border-white pl-2.5"
-                          : "text-white/70 hover:bg-white/10 hover:text-white",
+                          ? "bg-[var(--sidebar-active)] font-semibold text-white shadow-xs border-l-2 border-white pl-2.5"
+                          : "text-[var(--sidebar-ink)]/75 hover:bg-[var(--sidebar-hover)] hover:text-white",
                       )}
                     >
                       <Icon className="h-4 w-4 shrink-0" />
@@ -86,12 +87,16 @@ export function AppShell({ user, children }: { user: ShellUser; children: React.
           </div>
         ))}
       </div>
-      {!compact && (
-        <div className="border-t border-white/10 px-4 py-3.5 text-[11px] font-mono uppercase tracking-[0.16em] text-white/50 flex items-center justify-between">
-          <span>{ROLE_LABEL[user.role]}</span>
-          <span className="text-[9px] text-white/35">HPAD · 1989</span>
-        </div>
-      )}
+      <div className={cn("border-t border-[var(--sidebar-border)] px-4 py-3 text-[11px] font-mono uppercase tracking-[0.16em] text-[var(--sidebar-muted)] flex items-center justify-between gap-2", compact && "justify-center px-2")}>
+        {!compact ? (
+          <>
+            <span>{ROLE_LABEL[user.role]}</span>
+            <ThemeToggle className="h-7 px-2 border-white/10 bg-white/5 text-white/80 hover:bg-white/10 hover:text-white" />
+          </>
+        ) : (
+          <ThemeToggle className="h-8 w-8 p-0 border-white/10 bg-white/5 text-white/80 hover:bg-white/10 hover:text-white" />
+        )}
+      </div>
     </nav>
   );
 
@@ -145,6 +150,7 @@ export function AppShell({ user, children }: { user: ShellUser; children: React.
             <BrandLogo />
           </div>
           <div className="ml-auto flex items-center gap-2">
+            <ThemeToggle />
             <NotificationBell profileId={user.id} base={base} />
             <UserMenu user={user} base={base} />
           </div>
@@ -194,6 +200,9 @@ function UserMenu({ user, base }: { user: ShellUser; base: string }) {
             <p className="truncate text-sm font-medium text-ink">{user.name}</p>
             <p className="truncate text-xs text-muted">{user.email}</p>
             <p className="text-xs text-muted">ID: {user.employeeId}</p>
+          </div>
+          <div className="border-t border-line py-1">
+            <ThemeToggle variant="dropdown-item" />
           </div>
           <Link href={profileHref} className="flex items-center gap-2 px-4 py-2.5 text-sm text-ink hover:bg-surface-muted" onClick={() => setOpen(false)}>
             <User className="h-4 w-4" /> {user.role === "super_admin" ? "Settings" : "My profile"}

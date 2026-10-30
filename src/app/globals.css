@@ -3,13 +3,13 @@
 
 /*
  * ============================================================
- *  HPAD DESIGN SYSTEM — OFFICIALLY SOURCED FROM HPAD.CO.IN
+ *  HPAD DESIGN SYSTEM — DUAL THEME (LIGHT & DARK)
  *  Architectural minimalism, precise typography, tactile craft.
  *  "First, a drawing. Then, a place to live."
  * ============================================================
  */
 :root {
-  /* HPAD Brand Palette */
+  /* Light Mode Palette (Default) */
   --purple: #493D51;
   --maroon: #563D40;
   --grey: #787570;
@@ -42,6 +42,14 @@
   --info: #493D51;
   --info-soft: #EDE8F1;
 
+  /* Sidebar Tokens */
+  --sidebar-bg: #493D51;
+  --sidebar-border: rgba(255, 255, 255, 0.10);
+  --sidebar-ink: #F4F9FD;
+  --sidebar-muted: rgba(255, 255, 255, 0.50);
+  --sidebar-active: rgba(255, 255, 255, 0.16);
+  --sidebar-hover: rgba(255, 255, 255, 0.09);
+
   --radius: 12px;
   --shadow: 0 1px 3px rgba(42, 34, 48, 0.04), 0 6px 18px rgba(42, 34, 48, 0.05);
   --shadow-hover: 0 4px 12px rgba(42, 34, 48, 0.06), 0 16px 32px rgba(42, 34, 48, 0.08);
@@ -49,6 +57,56 @@
   --font-brand: "Kumbh Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --font-mono: "Oxygen Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
   --ease: cubic-bezier(0.2, 0.7, 0.1, 1);
+}
+
+/*
+ * ============================================================
+ *  HPAD DARK MODE — ARCHITECTURAL NIGHT
+ *  Warm aubergine/charcoal depth, luminous accents, no pure black.
+ * ============================================================
+ */
+html.dark {
+  --purple: #6B5977;
+  --maroon: #7A575B;
+  --grey: #9E95A3;
+  --ice: #F4F9FD;
+  --aubergine: #130E17;
+  --cream: #1C1523;
+
+  /* Semantic UI Tokens */
+  --brand: #5E4E68;
+  --brand-hover: #72607E;
+  --brand-contrast: #FFFFFF;
+  --brand-soft: rgba(107, 89, 119, 0.28);
+  --accent: #8E5860;
+
+  --bg: #130E17;
+  --surface: #1C1523;
+  --surface-muted: #241C2C;
+  --border: rgba(244, 249, 253, 0.09);
+  --text: #F4F9FD;
+  --text-muted: #9E95A3;
+
+  /* Architectural Status Tones in Dark Mode */
+  --success: #4EAD66;
+  --success-soft: rgba(78, 173, 102, 0.16);
+  --warning: #DE9E35;
+  --warning-soft: rgba(222, 158, 53, 0.16);
+  --danger: #DF5466;
+  --danger-soft: rgba(223, 84, 102, 0.16);
+  --info: #6486C4;
+  --info-soft: rgba(100, 134, 196, 0.16);
+
+  /* Sidebar Tokens in Dark Mode */
+  --sidebar-bg: #17111C;
+  --sidebar-border: rgba(244, 249, 253, 0.08);
+  --sidebar-ink: #F4F9FD;
+  --sidebar-muted: rgba(244, 249, 253, 0.45);
+  --sidebar-active: rgba(107, 89, 119, 0.35);
+  --sidebar-hover: rgba(244, 249, 253, 0.06);
+
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.35), 0 6px 18px rgba(0, 0, 0, 0.40);
+  --shadow-hover: 0 4px 16px rgba(0, 0, 0, 0.50), 0 20px 40px rgba(0, 0, 0, 0.60);
 }
 
 @theme inline {
@@ -85,6 +143,7 @@ body {
   letter-spacing: -0.01em;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 * {
@@ -93,12 +152,12 @@ body {
 }
 
 ::selection {
-  background: var(--purple);
-  color: var(--ice);
+  background: var(--brand);
+  color: var(--brand-contrast);
 }
 
 :focus-visible {
-  outline: 2px solid var(--purple);
+  outline: 2px solid var(--brand);
   outline-offset: 2px;
 }
 
@@ -111,12 +170,18 @@ body {
   line-height: 1.4;
 }
 
-/* Subtle Architectural Grid */
+/* Subtle Architectural Grid with Light and Dark support */
 .bg-hpad-blueprint {
   background-image: 
-    linear-gradient(to right, rgba(73, 61, 81, 0.04) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(73, 61, 81, 0.04) 1px, transparent 1px);
+    linear-gradient(to right, rgba(73, 61, 81, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(73, 61, 81, 0.05) 1px, transparent 1px);
   background-size: 32px 32px;
+}
+
+html.dark .bg-hpad-blueprint {
+  background-image: 
+    linear-gradient(to right, rgba(244, 249, 253, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(244, 249, 253, 0.04) 1px, transparent 1px);
 }
 
 /* Smooth Entrance Keyframes */
@@ -144,6 +209,10 @@ body {
   transform: translateY(-2px);
   box-shadow: var(--shadow-hover);
   border-color: rgba(73, 61, 81, 0.22);
+}
+
+html.dark .card-hover:hover {
+  border-color: rgba(244, 249, 253, 0.20);
 }
 
 @media print {

@@ -1,9 +1,15 @@
 import { BrandLogo } from "@/components/brand-logo";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { BRAND } from "@/lib/brand";
 
 export default function PublicLayout({ children }: { children: React.ReactNode }) {
   return (
-    <main className="relative flex min-h-dvh items-center justify-center bg-bg bg-hpad-blueprint px-4 py-12 selection:bg-brand selection:text-brand-contrast">
+    <main className="relative flex min-h-dvh items-center justify-center bg-bg bg-hpad-blueprint px-4 py-12 selection:bg-brand selection:text-brand-contrast transition-colors duration-300">
+      {/* Top right theme toggle */}
+      <div className="absolute top-6 right-6 z-10">
+        <ThemeToggle showLabel />
+      </div>
+
       {/* Architectural decorative watermark in corner */}
       <div className="pointer-events-none absolute top-8 left-8 hidden lg:block opacity-40">
         <p className="font-mono text-[10px] tracking-[0.24em] uppercase text-muted">
