@@ -11,7 +11,7 @@
  */
 import { adminClient, fail } from "./_admin-client";
 
-const DOMAIN = "demo.hpad.local";
+const DOMAIN = "hpad.com";
 const PASSWORD = process.env.DEMO_PASSWORD ?? "HpadDemo@2026";
 
 const ADMINS = [
