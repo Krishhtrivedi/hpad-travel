@@ -433,7 +433,7 @@ export function TravelRequestForm({
       </Card>
 
       {/* Buttons */}
-      <div className="sticky bottom-0 -mx-4 flex flex-wrap items-center justify-end gap-2 border-t border-line bg-surface/95 px-4 py-3 backdrop-blur sm:mx-0 sm:rounded-brand sm:border">
+      <div className="sticky bottom-0 -mx-4 flex flex-wrap items-center justify-end gap-2 border-t border-line bg-surface/95 px-4 py-3 backdrop-blur sm:mx-0 sm:rounded-brand sm:border pb-[max(0.75rem,env(safe-area-inset-bottom))]">
         {requestId ? (
           <Button type="button" variant="ghost" className="mr-auto text-danger" onClick={discard} disabled={!!busy}>
             <Trash2 className="h-4 w-4" /> Delete draft
