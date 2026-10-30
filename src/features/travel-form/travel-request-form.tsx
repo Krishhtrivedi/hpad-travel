@@ -433,30 +433,30 @@ export function TravelRequestForm({
       </Card>
 
       {/* Buttons */}
-      <div className="sticky bottom-0 -mx-4 flex flex-wrap items-center justify-end gap-2 border-t border-line bg-surface/95 px-4 py-3 backdrop-blur sm:mx-0 sm:rounded-brand sm:border pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+      <div className="sticky bottom-0 -mx-4 flex flex-col-reverse sm:flex-row items-stretch sm:items-center sm:justify-end gap-2.5 border-t border-line bg-surface/95 px-4 py-3 backdrop-blur sm:mx-0 sm:rounded-brand sm:border pb-[max(0.75rem,env(safe-area-inset-bottom))] shadow-lg">
         {requestId ? (
-          <Button type="button" variant="ghost" className="mr-auto text-danger" onClick={discard} disabled={!!busy}>
+          <Button type="button" variant="ghost" className="text-danger sm:mr-auto justify-center" onClick={discard} disabled={!!busy}>
             <Trash2 className="h-4 w-4" /> Delete draft
           </Button>
         ) : (
-          <Link href="/employee" className="mr-auto px-3 text-sm font-medium text-muted hover:text-ink">
+          <Link href="/employee" className="sm:mr-auto py-2 px-3 text-center text-xs font-mono uppercase tracking-[0.14em] font-medium text-muted hover:text-ink">
             Cancel
           </Link>
         )}
-        <Button type="button" variant="secondary" onClick={() => save(false)} loading={busy === "draft"} disabled={!!busy || (!isDirty && !files.length && !!requestId)}>
+        <Button type="button" variant="secondary" onClick={() => save(false)} loading={busy === "draft"} disabled={!!busy || (!isDirty && !files.length && !!requestId)} className="w-full sm:w-auto justify-center">
           Save draft
         </Button>
-        <Button type="submit" loading={busy === "submit"} disabled={!!busy || !employee.adminName}>
+        <Button type="submit" loading={busy === "submit"} disabled={!!busy || !employee.adminName} className="w-full sm:w-auto justify-center">
           <FileUp className="h-4 w-4" /> Submit travel request
         </Button>
       </div>
 
       <Dialog open={confirmOpen} onClose={() => !busy && setConfirmOpen(false)} title="Submit this travel request?" description={`It will be sent to ${employee.adminName ?? "your reporting admin"} for approval. You won't be able to edit it after submitting.`}>
-        <div className="flex justify-end gap-2">
-          <Button variant="secondary" onClick={() => setConfirmOpen(false)} disabled={!!busy}>
+        <div className="flex flex-col-reverse sm:flex-row justify-end gap-2 pt-2">
+          <Button variant="secondary" onClick={() => setConfirmOpen(false)} disabled={!!busy} className="w-full sm:w-auto">
             Keep editing
           </Button>
-          <Button onClick={() => save(true)} loading={busy === "submit"}>
+          <Button onClick={() => save(true)} loading={busy === "submit"} className="w-full sm:w-auto">
             Submit request
           </Button>
         </div>

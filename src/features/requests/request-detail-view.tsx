@@ -46,10 +46,10 @@ export async function RequestDetailView({ profile, id, backHref }: { profile: Pr
         <ArrowLeft className="h-4 w-4" /> Back
       </Link>
 
-      <div className="flex flex-wrap items-start justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
         <div>
-          <div className="flex flex-wrap items-center gap-3">
-            <h1 className="text-2xl font-semibold tracking-tight">{r.request_number}</h1>
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+            <h1 className="text-xl sm:text-2xl font-semibold tracking-tight">{r.request_number}</h1>
             <StatusBadge status={r.status} />
             <Badge>{TRAVEL_TYPE_LABEL[r.travel_type]}</Badge>
             {travelling && <Badge className="bg-info-soft text-info">On approved travel now</Badge>}
@@ -59,7 +59,9 @@ export async function RequestDetailView({ profile, id, backHref }: { profile: Pr
             {r.employee_name} · {r.departure_city} → {r.destination_city} · {formatDate(r.departure_date)} – {formatDate(r.return_date)}
           </p>
         </div>
-        <DownloadFormButton request={r} flight={f} site={s} history={h} documentNames={docs.map((d) => d.file_name)} />
+        <div className="w-full sm:w-auto">
+          <DownloadFormButton request={r} flight={f} site={s} history={h} documentNames={docs.map((d) => d.file_name)} />
+        </div>
       </div>
 
       {r.status === "approved" && (

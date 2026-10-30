@@ -46,11 +46,11 @@ export function DecisionPanel({ requestId, requestNumber, employeeName }: { requ
   return (
     <Card className="no-print">
       <CardHeader title="Your decision" description="This request is waiting for your review." />
-      <CardBody className="flex flex-wrap gap-3">
-        <Button variant="success" size="lg" onClick={() => setMode("approve")}>
+      <CardBody className="flex flex-col sm:flex-row gap-3">
+        <Button variant="success" size="lg" onClick={() => setMode("approve")} className="w-full sm:w-auto justify-center">
           <CheckCircle2 className="h-4 w-4" /> Approve request
         </Button>
-        <Button variant="danger" size="lg" onClick={() => setMode("reject")}>
+        <Button variant="danger" size="lg" onClick={() => setMode("reject")} className="w-full sm:w-auto justify-center">
           <XCircle className="h-4 w-4" /> Reject request
         </Button>
       </CardBody>

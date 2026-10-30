@@ -135,8 +135,18 @@ html.dark {
   --font-mono: var(--font-mono);
 }
 
-html,
+html {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  -webkit-text-size-adjust: 100%;
+}
+
 body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  position: relative;
   background: var(--bg);
   color: var(--text);
   font-family: var(--font-brand);

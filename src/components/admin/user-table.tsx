@@ -79,29 +79,31 @@ export function UserTable({
     <>
       {msg && <Alert tone={msg.tone} className="mb-4">{msg.text}</Alert>}
       <Card>
-        <div className="flex flex-wrap items-center gap-2 border-b border-line p-4">
-          <div className="relative min-w-[220px] flex-1">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 border-b border-line p-4">
+          <div className="relative w-full sm:min-w-[220px] sm:flex-1">
             <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
             <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder={`Search ${label.toLowerCase()}s`} className="pl-9" aria-label="Search" />
           </div>
-          {role === "employee" && (
-            <Select value={adminFilter} onChange={(e) => setAdminFilter(e.target.value)} className="w-auto" aria-label="Filter by admin">
-              <option value="">All admins</option>
-              {admins.map((a) => (
-                <option key={a.id} value={a.id}>
-                  {a.label}
-                </option>
-              ))}
+          <div className="grid grid-cols-2 sm:flex sm:items-center gap-2">
+            {role === "employee" && (
+              <Select value={adminFilter} onChange={(e) => setAdminFilter(e.target.value)} className="w-full sm:w-auto" aria-label="Filter by admin">
+                <option value="">All admins</option>
+                {admins.map((a) => (
+                  <option key={a.id} value={a.id}>
+                    {a.label}
+                  </option>
+                ))}
+              </Select>
+            )}
+            <Select value={status} onChange={(e) => setStatus(e.target.value as typeof status)} className="w-full sm:w-auto" aria-label="Filter by status">
+              <option value="">Any status</option>
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option>
             </Select>
-          )}
-          <Select value={status} onChange={(e) => setStatus(e.target.value as typeof status)} className="w-auto" aria-label="Filter by status">
-            <option value="">Any status</option>
-            <option value="active">Active</option>
-            <option value="inactive">Inactive</option>
-          </Select>
-          <Button onClick={() => setEditing(blank)} disabled={role === "employee" && admins.length === 0}>
-            <Plus className="h-4 w-4" /> Add {label.toLowerCase()}
-          </Button>
+            <Button onClick={() => setEditing(blank)} disabled={role === "employee" && admins.length === 0} className="col-span-2 sm:col-span-1 justify-center">
+              <Plus className="h-4 w-4" /> Add {label.toLowerCase()}
+            </Button>
+          </div>
         </div>
         {role === "employee" && admins.length === 0 && (
           <div className="p-4">

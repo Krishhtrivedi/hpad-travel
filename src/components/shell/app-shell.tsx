@@ -101,7 +101,7 @@ export function AppShell({ user, children }: { user: ShellUser; children: React.
   );
 
   return (
-    <div className="min-h-dvh bg-bg">
+    <div className="min-h-dvh bg-bg w-full max-w-full overflow-x-hidden">
       <RealtimeRefresher />
       {/* Desktop sidebar */}
       <aside
@@ -116,8 +116,8 @@ export function AppShell({ user, children }: { user: ShellUser; children: React.
       {/* Mobile drawer */}
       {mobileOpen && (
         <div className="fixed inset-0 z-40 lg:hidden">
-          <div className="absolute inset-0 bg-black/40" onClick={() => setMobileOpen(false)} />
-          <aside className="absolute inset-y-0 left-0 w-72 max-w-[85vw] shadow-xl">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-xs transition-opacity" onClick={() => setMobileOpen(false)} />
+          <aside className="absolute inset-y-0 left-0 w-72 max-w-[85vw] shadow-2xl animate-hpad-enter">
             <button
               onClick={() => setMobileOpen(false)}
               className="absolute right-3 top-5 z-10 rounded p-1 text-white/80 hover:bg-white/10"
@@ -130,8 +130,8 @@ export function AppShell({ user, children }: { user: ShellUser; children: React.
         </div>
       )}
 
-      <div className={cn("transition-[padding] duration-200", collapsed ? "lg:pl-[72px]" : "lg:pl-64")}>
-        <header className="sticky top-0 z-20 flex h-16 items-center gap-3 border-b border-line bg-surface/85 px-4 backdrop-blur-md sm:px-6 transition-all">
+      <div className={cn("min-w-0 max-w-full transition-[padding] duration-200", collapsed ? "lg:pl-[72px]" : "lg:pl-64")}>
+        <header className="sticky top-0 z-20 flex h-16 items-center gap-2 sm:gap-3 border-b border-line bg-surface/85 px-3 sm:px-6 backdrop-blur-md transition-all">
           <button
             className="rounded-brand p-2 text-muted hover:bg-surface-muted lg:hidden"
             onClick={() => setMobileOpen(true)}
@@ -146,16 +146,16 @@ export function AppShell({ user, children }: { user: ShellUser; children: React.
           >
             {collapsed ? <PanelLeftOpen className="h-5 w-5" /> : <PanelLeftClose className="h-5 w-5" />}
           </button>
-          <div className="lg:hidden">
-            <BrandLogo />
+          <div className="lg:hidden flex items-center min-w-0">
+            <BrandLogo className="scale-90 sm:scale-100 origin-left" />
           </div>
-          <div className="ml-auto flex items-center gap-2">
+          <div className="ml-auto flex items-center gap-1.5 sm:gap-2">
             <ThemeToggle />
             <NotificationBell profileId={user.id} base={base} />
             <UserMenu user={user} base={base} />
           </div>
         </header>
-        <main className="mx-auto w-full max-w-[1400px] px-4 py-6 sm:px-6 lg:py-8">{children}</main>
+        <main className="mx-auto w-full max-w-[1400px] min-w-0 px-3.5 py-5 sm:px-6 lg:py-8">{children}</main>
       </div>
     </div>
   );

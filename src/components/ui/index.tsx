@@ -6,7 +6,7 @@ import type { RequestStatus } from "@/lib/types";
 /* ---------------------------------------------------------------- Button */
 type ButtonVariant = "primary" | "secondary" | "danger" | "success" | "ghost" | "line";
 const buttonBase =
-  "inline-flex items-center justify-center gap-2 rounded-brand text-xs font-mono uppercase tracking-[0.14em] font-medium transition-all duration-300 disabled:opacity-50 disabled:pointer-events-none whitespace-nowrap active:scale-[0.98]";
+  "inline-flex items-center justify-center gap-2 rounded-brand text-xs font-mono uppercase tracking-[0.14em] font-medium transition-all duration-300 disabled:opacity-50 disabled:pointer-events-none active:scale-[0.98]";
 
 const buttonVariants: Record<ButtonVariant, string> = {
   primary:
@@ -24,9 +24,9 @@ const buttonVariants: Record<ButtonVariant, string> = {
 };
 
 const buttonSizes = {
-  sm: "h-8 px-3.5 text-[11px]",
-  md: "h-10 px-4 text-xs",
-  lg: "h-11 px-6 text-xs",
+  sm: "h-9 sm:h-8 px-3.5 text-xs sm:text-[11px] min-h-[36px] sm:min-h-0",
+  md: "h-11 sm:h-10 px-4 text-xs min-h-[44px] sm:min-h-0",
+  lg: "h-12 sm:h-11 px-5 sm:px-6 text-xs min-h-[48px] sm:min-h-0",
 };
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -90,7 +90,7 @@ export function Card({ className, ...props }: React.HTMLAttributes<HTMLDivElemen
   return (
     <div
       className={cn(
-        "rounded-brand border border-line bg-surface shadow-card transition-all duration-300 card-hover",
+        "rounded-brand border border-line bg-surface shadow-card transition-all duration-300 card-hover max-w-full overflow-hidden",
         className
       )}
       {...props}
@@ -110,9 +110,9 @@ export function CardHeader({
   className?: string;
 }) {
   return (
-    <div className={cn("flex flex-wrap items-start justify-between gap-3 border-b border-line px-6 py-4.5", className)}>
+    <div className={cn("flex flex-wrap items-start justify-between gap-3 border-b border-line px-4 py-3.5 sm:px-6 sm:py-4.5", className)}>
       <div>
-        <h2 className="text-base font-semibold tracking-tight text-ink">{title}</h2>
+        <h2 className="text-sm sm:text-base font-semibold tracking-tight text-ink">{title}</h2>
         {description && <p className="mt-0.5 text-xs text-muted">{description}</p>}
       </div>
       {action}
@@ -121,7 +121,7 @@ export function CardHeader({
 }
 
 export function CardBody({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn("p-6", className)} {...props} />;
+  return <div className={cn("p-4 sm:p-6", className)} {...props} />;
 }
 
 /* ---------------------------------------------------------------- Page header */
@@ -135,12 +135,12 @@ export function PageHeader({
   actions?: React.ReactNode;
 }) {
   return (
-    <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
+    <div className="mb-6 sm:mb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-3.5 sm:gap-4">
       <div>
-        <h1 className="text-2xl lg:text-3xl font-light tracking-tight text-ink">{title}</h1>
-        {description && <p className="mt-1.5 text-xs font-mono uppercase tracking-[0.14em] text-muted">{description}</p>}
+        <h1 className="text-xl sm:text-2xl lg:text-3xl font-light tracking-tight text-ink">{title}</h1>
+        {description && <p className="mt-1 sm:mt-1.5 text-xs font-mono uppercase tracking-[0.14em] text-muted">{description}</p>}
       </div>
-      {actions && <div className="flex flex-wrap gap-2.5">{actions}</div>}
+      {actions && <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 w-full sm:w-auto">{actions}</div>}
     </div>
   );
 }
@@ -169,15 +169,15 @@ export function StatCard({
     info: "bg-info-soft/70 text-info border-info/10",
   };
   const body = (
-    <Card className={cn("flex items-center gap-4.5 p-5 group", href && "hover:border-brand/40")}>
+    <Card className={cn("flex items-center gap-3.5 sm:gap-4.5 p-4 sm:p-5 group", href && "hover:border-brand/40")}>
       {icon && (
-        <div className={cn("flex h-12 w-12 shrink-0 items-center justify-center rounded-brand border transition-transform duration-300 group-hover:scale-105", tones[tone])}>
+        <div className={cn("flex h-10 w-10 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-brand border transition-transform duration-300 group-hover:scale-105", tones[tone])}>
           {icon}
         </div>
       )}
       <div className="min-w-0">
         <p className="truncate text-xs font-mono uppercase tracking-[0.14em] text-muted">{label}</p>
-        <p className="mt-0.5 text-2xl font-normal tracking-tight tabular-nums text-ink">{value}</p>
+        <p className="mt-0.5 text-xl sm:text-2xl font-normal tracking-tight tabular-nums text-ink">{value}</p>
         {hint && <p className="mt-0.5 truncate text-[11px] text-muted">{hint}</p>}
       </div>
     </Card>
@@ -223,7 +223,7 @@ export function Badge({ children, className }: { children: React.ReactNode; clas
 
 /* ---------------------------------------------------------------- Form controls */
 const control =
-  "w-full rounded-brand border border-line bg-surface px-3.5 text-sm text-ink placeholder:text-muted/60 transition-all duration-200 focus:border-brand focus:outline-none focus:ring-3 focus:ring-brand/10 disabled:bg-surface-muted disabled:text-muted";
+  "w-full rounded-brand border border-line bg-surface px-3.5 text-base sm:text-sm text-ink placeholder:text-muted/60 transition-all duration-200 focus:border-brand focus:outline-none focus:ring-3 focus:ring-brand/10 disabled:bg-surface-muted disabled:text-muted";
 
 export const Input = React.forwardRef<HTMLInputElement, React.InputHTMLAttributes<HTMLInputElement>>(
   function Input({ className, ...props }, ref) {
@@ -340,8 +340,8 @@ export function EmptyState({
 /* ---------------------------------------------------------------- Table */
 export function Table({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
-    <div className={cn("overflow-x-auto", className)}>
-      <table className="w-full min-w-[720px] border-collapse text-sm">{children}</table>
+    <div className={cn("w-full max-w-full overflow-x-auto", className)}>
+      <table className="w-full min-w-[640px] sm:min-w-[720px] border-collapse text-sm">{children}</table>
     </div>
   );
 }

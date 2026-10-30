@@ -116,7 +116,7 @@ export function DownloadFormButton({
   };
 
   return (
-    <Button variant="secondary" onClick={generate} loading={busy}>
+    <Button variant="secondary" onClick={generate} loading={busy} className="w-full sm:w-auto justify-center">
       <Download className="h-4 w-4" /> Download form
     </Button>
   );

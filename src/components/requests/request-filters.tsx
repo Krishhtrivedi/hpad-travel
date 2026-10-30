@@ -47,32 +47,35 @@ export function RequestFilters({ showStatus, showEmployee, showAdmin, employees 
 
   return (
     <div className="space-y-3 border-b border-line p-4">
-      <div className="flex flex-wrap items-center gap-2">
-        <div className="relative min-w-[220px] flex-1">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+        <div className="relative w-full sm:min-w-[220px] sm:flex-1">
           <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
           <Input
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            placeholder="Search by request ID, employee, destination or purpose"
+            placeholder="Search by ID, employee, destination or purpose"
             className="pl-9"
             aria-label="Search requests"
           />
         </div>
-        <Button variant="secondary" onClick={() => setOpen((o) => !o)} aria-expanded={open}>
-          <Filter className="h-4 w-4" /> Filters
-          {activeCount > 0 && <span className="rounded-full bg-brand px-1.5 text-xs text-brand-contrast">{activeCount}</span>}
-        </Button>
-        {(activeCount > 0 || q) && (
-          <Button
-            variant="ghost"
-            onClick={() => {
-              setQ("");
-              startTransition(() => router.push(pathname, { scroll: false }));
-            }}
-          >
-            <X className="h-4 w-4" /> Clear
+        <div className="flex items-center gap-2">
+          <Button variant="secondary" onClick={() => setOpen((o) => !o)} aria-expanded={open} className="flex-1 sm:flex-initial">
+            <Filter className="h-4 w-4" /> Filters
+            {activeCount > 0 && <span className="rounded-full bg-brand px-1.5 text-xs text-brand-contrast">{activeCount}</span>}
           </Button>
-        )}
+          {(activeCount > 0 || q) && (
+            <Button
+              variant="ghost"
+              onClick={() => {
+                setQ("");
+                startTransition(() => router.push(pathname, { scroll: false }));
+              }}
+              className="flex-1 sm:flex-initial"
+            >
+              <X className="h-4 w-4" /> Clear
+            </Button>
+          )}
+        </div>
       </div>
       {open && (
         <div className={cn("grid gap-3 sm:grid-cols-2 lg:grid-cols-4", pending && "opacity-60")}>
