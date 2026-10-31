@@ -184,7 +184,7 @@ export function UserTable({
                     )}
                   </div>
 
-                  <div className="flex items-center justify-end gap-2 border-t border-line/50 pt-2.5">
+                  <div className="flex flex-wrap items-center justify-end gap-1.5 sm:gap-2 border-t border-line/50 pt-2.5">
                     <Button
                       variant="secondary"
                       size="sm"
@@ -200,7 +200,7 @@ export function UserTable({
                           assigned_admin_id: r.assigned_admin_id ?? "",
                         })
                       }
-                      className="text-xs"
+                      className="text-xs flex-1 sm:flex-initial justify-center"
                     >
                       <Pencil className="h-3.5 w-3.5" /> Edit
                     </Button>
@@ -209,7 +209,7 @@ export function UserTable({
                       size="sm"
                       disabled={pending || !r.is_active}
                       onClick={() => confirm(`Email a password reset link to ${r.email}?`) && run(() => sendPasswordReset(r.id))}
-                      className="text-xs"
+                      className="text-xs flex-1 sm:flex-initial justify-center"
                     >
                       <KeyRound className="h-3.5 w-3.5" /> Reset
                     </Button>
@@ -221,7 +221,7 @@ export function UserTable({
                         confirm(r.is_active ? `Deactivate ${r.full_name}? They will be signed out immediately.` : `Reactivate ${r.full_name}?`) &&
                         run(() => setUserActive(r.id, !r.is_active))
                       }
-                      className="text-xs"
+                      className="text-xs flex-1 sm:flex-initial justify-center"
                     >
                       <Power className="h-3.5 w-3.5" /> {r.is_active ? "Deactivate" : "Activate"}
                     </Button>

@@ -12,7 +12,7 @@ export function PhoneForm({ phone }: { phone: string }) {
       <Field label="Mobile number" htmlFor="phone">
         <Input id="phone" name="phone" type="tel" defaultValue={phone} autoComplete="tel" />
       </Field>
-      <Button type="submit" variant="secondary" loading={pending}>
+      <Button type="submit" variant="secondary" loading={pending} className="w-full sm:w-auto justify-center">
         Save
       </Button>
     </form>
@@ -33,7 +33,7 @@ export function PasswordForm() {
       <Field label="Confirm new password" htmlFor="confirm">
         <Input id="confirm" name="confirm" type="password" autoComplete="new-password" required />
       </Field>
-      <Button type="submit" variant="secondary" loading={pending}>
+      <Button type="submit" variant="secondary" loading={pending} className="w-full sm:w-auto justify-center">
         Change password
       </Button>
     </form>

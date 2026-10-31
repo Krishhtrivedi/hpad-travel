@@ -14,6 +14,7 @@ export function ReminderButton() {
       <Button
         variant="secondary"
         loading={pending}
+        className="w-full sm:w-auto justify-center"
         onClick={() =>
           start(async () => {
             const res = await sendPendingReminders();

@@ -99,11 +99,11 @@ export function UserFormDialog({
             <Input id="u-pw" type="text" autoComplete="new-password" value={values.password} onChange={set("password")} />
           </Field>
         )}
-        <div className="flex justify-end gap-2 sm:col-span-2">
-          <Button type="button" variant="secondary" onClick={onClose} disabled={pending}>
+        <div className="flex flex-col-reverse sm:flex-row justify-end gap-2.5 sm:col-span-2 pt-2">
+          <Button type="button" variant="secondary" onClick={onClose} disabled={pending} className="w-full sm:w-auto justify-center">
             Cancel
           </Button>
-          <Button type="submit" loading={pending}>
+          <Button type="submit" loading={pending} className="w-full sm:w-auto justify-center">
             {editing ? "Save changes" : `Create ${label.toLowerCase()}`}
           </Button>
         </div>

@@ -32,11 +32,15 @@ export function AddDocuments({ requestId, isFlight }: { requestId: string; isFli
     });
 
   return (
-    <div className="no-print space-y-3 rounded-brand border border-dashed border-line p-3">
+    <div className="no-print space-y-3 rounded-brand border border-dashed border-line p-3 sm:p-4">
       {msg && <Alert tone={msg.tone}>{msg.text}</Alert>}
-      <div className="flex flex-wrap items-center gap-2">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-2.5">
         {isFlight && (
-          <select value={kind} onChange={(e) => setKind(e.target.value as typeof kind)} className="h-9 rounded-brand border border-line bg-surface px-2 text-sm">
+          <select
+            value={kind}
+            onChange={(e) => setKind(e.target.value as typeof kind)}
+            className="h-10 sm:h-9 w-full sm:w-auto rounded-brand border border-line bg-surface px-2.5 text-sm"
+          >
             <option value="flight_ticket">Flight ticket</option>
             <option value="supporting">Supporting document</option>
           </select>
@@ -55,9 +59,9 @@ export function AddDocuments({ requestId, isFlight }: { requestId: string; isFli
             }
             setFiles(list);
           }}
-          className="text-sm file:mr-3 file:rounded-brand file:border-0 file:bg-brand-soft file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-brand"
+          className="w-full sm:w-auto text-sm text-foreground file:mr-3 file:rounded-brand file:border-0 file:bg-brand-soft file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-brand cursor-pointer"
         />
-        <Button size="sm" onClick={upload} disabled={!files.length} loading={pending}>
+        <Button size="sm" onClick={upload} disabled={!files.length} loading={pending} className="w-full sm:w-auto justify-center">
           <Upload className="h-4 w-4" /> Upload
         </Button>
       </div>

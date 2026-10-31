@@ -90,37 +90,69 @@ export async function AnalyticsView({ profile }: { profile: Profile }) {
           <CardBody>
             <AdminPerformanceChart data={s.admin_performance} />
           </CardBody>
-          <Table>
-            <thead>
-              <tr>
-                <Th>Admin</Th>
-                <Th>Received</Th>
-                <Th>Approved</Th>
-                <Th>Rejected</Th>
-                <Th>Pending</Th>
-                <Th>Avg. time to decide</Th>
-              </tr>
-            </thead>
-            <tbody>
-              {s.admin_performance.map((a) => (
-                <tr key={a.name}>
-                  <Td className="font-medium">{a.name}</Td>
-                  <Td>{a.received}</Td>
-                  <Td>{a.approved}</Td>
-                  <Td>{a.rejected}</Td>
-                  <Td>{a.pending}</Td>
-                  <Td>{a.avg_hours != null ? `${a.avg_hours} h` : "—"}</Td>
+          {/* Mobile Card View for Admin Performance */}
+          <div className="divide-y divide-line sm:hidden">
+            {s.admin_performance.map((a) => (
+              <div key={a.name} className="p-4 space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="font-semibold text-sm text-ink">{a.name}</span>
+                  <span className="text-xs font-mono text-muted">Avg: {a.avg_hours != null ? `${a.avg_hours} h` : "—"}</span>
+                </div>
+                <div className="grid grid-cols-4 gap-2 text-xs border-t border-line/50 pt-2">
+                  <div>
+                    <span className="block text-[10px] font-mono uppercase text-muted">Received</span>
+                    <span className="font-medium text-ink">{a.received}</span>
+                  </div>
+                  <div>
+                    <span className="block text-[10px] font-mono uppercase text-success">Approved</span>
+                    <span className="font-semibold text-success">{a.approved}</span>
+                  </div>
+                  <div>
+                    <span className="block text-[10px] font-mono uppercase text-danger">Rejected</span>
+                    <span className="font-semibold text-danger">{a.rejected}</span>
+                  </div>
+                  <div>
+                    <span className="block text-[10px] font-mono uppercase text-warning">Pending</span>
+                    <span className="font-semibold text-warning">{a.pending}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+          {/* Desktop Table */}
+          <div className="hidden sm:block">
+            <Table>
+              <thead>
+                <tr>
+                  <Th>Admin</Th>
+                  <Th>Received</Th>
+                  <Th>Approved</Th>
+                  <Th>Rejected</Th>
+                  <Th>Pending</Th>
+                  <Th>Avg. time to decide</Th>
                 </tr>
-              ))}
-            </tbody>
-          </Table>
+              </thead>
+              <tbody>
+                {s.admin_performance.map((a) => (
+                  <tr key={a.name}>
+                    <Td className="font-medium">{a.name}</Td>
+                    <Td>{a.received}</Td>
+                    <Td>{a.approved}</Td>
+                    <Td>{a.rejected}</Td>
+                    <Td>{a.pending}</Td>
+                    <Td>{a.avg_hours != null ? `${a.avg_hours} h` : "—"}</Td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          </div>
         </Card>
       )}
 
       {s.yearly.length > 0 && (
         <Card className="mt-6">
           <CardHeader title="Yearly totals" />
-          <Table>
+          <Table tableClassName="min-w-full">
             <thead>
               <tr>
                 <Th>Year</Th>

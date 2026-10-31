@@ -338,10 +338,10 @@ export function EmptyState({
 }
 
 /* ---------------------------------------------------------------- Table */
-export function Table({ children, className }: { children: React.ReactNode; className?: string }) {
+export function Table({ children, className, tableClassName }: { children: React.ReactNode; className?: string; tableClassName?: string }) {
   return (
     <div className={cn("w-full max-w-full overflow-x-auto", className)}>
-      <table className="w-full min-w-[640px] sm:min-w-[720px] border-collapse text-sm">{children}</table>
+      <table className={cn("w-full min-w-[640px] sm:min-w-[720px] border-collapse text-sm", tableClassName)}>{children}</table>
     </div>
   );
 }

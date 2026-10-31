@@ -69,7 +69,7 @@ export function NotificationBell({ profileId, base }: { profileId: string; base:
         )}
       </button>
       {open && (
-        <div className="absolute right-0 mt-2 w-[min(380px,calc(100vw-2rem))] overflow-hidden rounded-brand border border-line bg-surface shadow-lg">
+        <div className="fixed inset-x-3.5 top-16 sm:absolute sm:inset-x-auto sm:right-0 sm:top-full sm:mt-2 sm:w-[380px] z-50 overflow-hidden rounded-brand border border-line bg-surface shadow-xl">
           <div className="flex items-center justify-between border-b border-line px-4 py-3">
             <p className="text-sm font-semibold text-ink">Notifications</p>
             {unread > 0 && (

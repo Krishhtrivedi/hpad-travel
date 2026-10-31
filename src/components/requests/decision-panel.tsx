@@ -77,11 +77,11 @@ export function DecisionPanel({ requestId, requestNumber, employeeName }: { requ
               autoFocus
             />
           </Field>
-          <div className="flex justify-end gap-2">
-            <Button variant="secondary" onClick={close} disabled={pending}>
+          <div className="flex flex-col-reverse sm:flex-row justify-end gap-2.5 pt-2">
+            <Button variant="secondary" onClick={close} disabled={pending} className="w-full sm:w-auto justify-center">
               Cancel
             </Button>
-            <Button variant={mode === "approve" ? "success" : "danger"} onClick={confirm} loading={pending}>
+            <Button variant={mode === "approve" ? "success" : "danger"} onClick={confirm} loading={pending} className="w-full sm:w-auto justify-center">
               {mode === "approve" ? "Confirm approval" : "Confirm rejection"}
             </Button>
           </div>
