@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { KeyRound, Pencil, Plus, Power, Search } from "lucide-react";
 import { reassignEmployee, sendPasswordReset, setUserActive } from "@/app/actions/users";
 import { Alert, Badge, Button, Card, EmptyState, Input, Select, Table, Td, Th } from "@/components/ui";
+import { cn } from "@/lib/utils";
 import { UserFormDialog, type UserFormValues } from "./user-form-dialog";
 
 export interface UserRow {
@@ -113,106 +114,226 @@ export function UserTable({
         {filtered.length === 0 ? (
           <EmptyState title={`No ${label.toLowerCase()}s found`} />
         ) : (
-          <Table>
-            <thead>
-              <tr>
-                <Th>{label}</Th>
-                <Th>Department</Th>
-                {role === "employee" ? <Th>Reporting admin</Th> : <Th>Employees</Th>}
-                {role === "employee" ? <Th>Requests</Th> : <Th>Approved / Rejected / Pending</Th>}
-                <Th>Status</Th>
-                <Th className="text-right">Actions</Th>
-              </tr>
-            </thead>
-            <tbody>
+          <>
+            {/* Mobile Card View */}
+            <div className="divide-y divide-line md:hidden">
               {filtered.map((r) => (
-                <tr key={r.id} className={r.is_active ? "" : "opacity-60"}>
-                  <Td>
-                    {role === "employee" ? (
-                      <Link href={`/super-admin/employees/${r.id}`} className="font-medium text-brand hover:underline">
-                        {r.full_name}
-                      </Link>
-                    ) : (
-                      <span className="font-medium">{r.full_name}</span>
-                    )}
-                    <div className="text-xs text-muted">
-                      {r.employee_id} · {r.email}
+                <div key={r.id} className={cn("p-4 space-y-3", !r.is_active && "opacity-60")}>
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      {role === "employee" ? (
+                        <Link href={`/super-admin/employees/${r.id}`} className="font-semibold text-base text-brand hover:underline">
+                          {r.full_name}
+                        </Link>
+                      ) : (
+                        <span className="font-semibold text-base text-ink">{r.full_name}</span>
+                      )}
+                      <p className="font-mono text-xs text-muted mt-0.5">
+                        {r.employee_id} · {r.email}
+                      </p>
                     </div>
-                  </Td>
-                  <Td>{r.department ?? "—"}</Td>
-                  <Td>
-                    {role === "employee" ? (
-                      <Select
-                        value={r.assigned_admin_id ?? ""}
-                        onChange={(e) => e.target.value && run(() => reassignEmployee(r.id, e.target.value))}
-                        disabled={pending}
-                        className="h-8 w-44 text-xs"
-                        aria-label={`Reporting admin for ${r.full_name}`}
-                      >
-                        {admins.map((a) => (
-                          <option key={a.id} value={a.id}>
-                            {a.label}
-                          </option>
-                        ))}
-                      </Select>
-                    ) : (
-                      r.employees ?? 0
-                    )}
-                  </Td>
-                  <Td className="tabular-nums">
-                    {role === "employee" ? (
-                      r.requests ?? 0
-                    ) : (
-                      <span>
-                        <span className="text-success">{r.approved ?? 0}</span> / <span className="text-danger">{r.rejected ?? 0}</span> /{" "}
-                        <span className="text-warning">{r.pending ?? 0}</span>
+                    {r.is_active ? <Badge className="bg-success-soft text-success shrink-0">Active</Badge> : <Badge className="shrink-0">Inactive</Badge>}
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2 text-xs border-t border-line/50 pt-2.5">
+                    <div>
+                      <span className="block font-mono text-[10px] uppercase tracking-wider text-muted">Department</span>
+                      <span className="font-medium text-ink">{r.department ?? "—"}</span>
+                    </div>
+                    <div>
+                      <span className="block font-mono text-[10px] uppercase tracking-wider text-muted">
+                        {role === "employee" ? "Requests" : "Employees"}
                       </span>
-                    )}
-                  </Td>
-                  <Td>{r.is_active ? <Badge className="bg-success-soft text-success">Active</Badge> : <Badge>Inactive</Badge>}</Td>
-                  <Td>
-                    <div className="flex justify-end gap-1">
-                      <IconButton
-                        label="Edit"
-                        onClick={() =>
-                          setEditing({
-                            id: r.id,
-                            full_name: r.full_name,
-                            email: r.email,
-                            employee_id: r.employee_id,
-                            phone: r.phone ?? "",
-                            department: r.department ?? "",
-                            role: r.role,
-                            assigned_admin_id: r.assigned_admin_id ?? "",
-                          })
-                        }
-                      >
-                        <Pencil className="h-4 w-4" />
-                      </IconButton>
-                      <IconButton
-                        label="Send password reset email"
-                        disabled={pending || !r.is_active}
-                        onClick={() => confirm(`Email a password reset link to ${r.email}?`) && run(() => sendPasswordReset(r.id))}
-                      >
-                        <KeyRound className="h-4 w-4" />
-                      </IconButton>
-                      <IconButton
-                        label={r.is_active ? "Deactivate" : "Activate"}
-                        disabled={pending || r.id === meId}
-                        danger={r.is_active}
-                        onClick={() =>
-                          confirm(r.is_active ? `Deactivate ${r.full_name}? They will be signed out of all data immediately.` : `Reactivate ${r.full_name}?`) &&
-                          run(() => setUserActive(r.id, !r.is_active))
-                        }
-                      >
-                        <Power className="h-4 w-4" />
-                      </IconButton>
+                      <span className="font-medium text-ink">
+                        {role === "employee" ? (
+                          r.requests ?? 0
+                        ) : (
+                          r.employees ?? 0
+                        )}
+                      </span>
                     </div>
-                  </Td>
-                </tr>
+
+                    {role === "admin" && (
+                      <div className="col-span-2">
+                        <span className="block font-mono text-[10px] uppercase tracking-wider text-muted">Approval Stats</span>
+                        <span className="text-xs">
+                          <span className="text-success font-semibold">{r.approved ?? 0}</span> approved /{" "}
+                          <span className="text-danger font-semibold">{r.rejected ?? 0}</span> rejected /{" "}
+                          <span className="text-warning font-semibold">{r.pending ?? 0}</span> pending
+                        </span>
+                      </div>
+                    )}
+
+                    {role === "employee" && (
+                      <div className="col-span-2 space-y-1">
+                        <span className="block font-mono text-[10px] uppercase tracking-wider text-muted">Reporting Admin</span>
+                        <Select
+                          value={r.assigned_admin_id ?? ""}
+                          onChange={(e) => e.target.value && run(() => reassignEmployee(r.id, e.target.value))}
+                          disabled={pending}
+                          className="h-9 w-full text-xs"
+                          aria-label={`Reporting admin for ${r.full_name}`}
+                        >
+                          {admins.map((a) => (
+                            <option key={a.id} value={a.id}>
+                              {a.label}
+                            </option>
+                          ))}
+                        </Select>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="flex items-center justify-end gap-2 border-t border-line/50 pt-2.5">
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      onClick={() =>
+                        setEditing({
+                          id: r.id,
+                          full_name: r.full_name,
+                          email: r.email,
+                          employee_id: r.employee_id,
+                          phone: r.phone ?? "",
+                          department: r.department ?? "",
+                          role: r.role,
+                          assigned_admin_id: r.assigned_admin_id ?? "",
+                        })
+                      }
+                      className="text-xs"
+                    >
+                      <Pencil className="h-3.5 w-3.5" /> Edit
+                    </Button>
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      disabled={pending || !r.is_active}
+                      onClick={() => confirm(`Email a password reset link to ${r.email}?`) && run(() => sendPasswordReset(r.id))}
+                      className="text-xs"
+                    >
+                      <KeyRound className="h-3.5 w-3.5" /> Reset
+                    </Button>
+                    <Button
+                      variant={r.is_active ? "danger" : "secondary"}
+                      size="sm"
+                      disabled={pending || r.id === meId}
+                      onClick={() =>
+                        confirm(r.is_active ? `Deactivate ${r.full_name}? They will be signed out immediately.` : `Reactivate ${r.full_name}?`) &&
+                        run(() => setUserActive(r.id, !r.is_active))
+                      }
+                      className="text-xs"
+                    >
+                      <Power className="h-3.5 w-3.5" /> {r.is_active ? "Deactivate" : "Activate"}
+                    </Button>
+                  </div>
+                </div>
               ))}
-            </tbody>
-          </Table>
+            </div>
+
+            {/* Desktop Table */}
+            <div className="hidden md:block">
+              <Table>
+                <thead>
+                  <tr>
+                    <Th>{label}</Th>
+                    <Th>Department</Th>
+                    {role === "employee" ? <Th>Reporting admin</Th> : <Th>Employees</Th>}
+                    {role === "employee" ? <Th>Requests</Th> : <Th>Approved / Rejected / Pending</Th>}
+                    <Th>Status</Th>
+                    <Th className="text-right">Actions</Th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filtered.map((r) => (
+                    <tr key={r.id} className={r.is_active ? "" : "opacity-60"}>
+                      <Td>
+                        {role === "employee" ? (
+                          <Link href={`/super-admin/employees/${r.id}`} className="font-medium text-brand hover:underline">
+                            {r.full_name}
+                          </Link>
+                        ) : (
+                          <span className="font-medium">{r.full_name}</span>
+                        )}
+                        <div className="text-xs text-muted">
+                          {r.employee_id} · {r.email}
+                        </div>
+                      </Td>
+                      <Td>{r.department ?? "—"}</Td>
+                      <Td>
+                        {role === "employee" ? (
+                          <Select
+                            value={r.assigned_admin_id ?? ""}
+                            onChange={(e) => e.target.value && run(() => reassignEmployee(r.id, e.target.value))}
+                            disabled={pending}
+                            className="h-8 w-44 text-xs"
+                            aria-label={`Reporting admin for ${r.full_name}`}
+                          >
+                            {admins.map((a) => (
+                              <option key={a.id} value={a.id}>
+                                {a.label}
+                              </option>
+                            ))}
+                          </Select>
+                        ) : (
+                          r.employees ?? 0
+                        )}
+                      </Td>
+                      <Td className="tabular-nums">
+                        {role === "employee" ? (
+                          r.requests ?? 0
+                        ) : (
+                          <span>
+                            <span className="text-success">{r.approved ?? 0}</span> / <span className="text-danger">{r.rejected ?? 0}</span> /{" "}
+                            <span className="text-warning">{r.pending ?? 0}</span>
+                          </span>
+                        )}
+                      </Td>
+                      <Td>{r.is_active ? <Badge className="bg-success-soft text-success">Active</Badge> : <Badge>Inactive</Badge>}</Td>
+                      <Td>
+                        <div className="flex justify-end gap-1">
+                          <IconButton
+                            label="Edit"
+                            onClick={() =>
+                              setEditing({
+                                id: r.id,
+                                full_name: r.full_name,
+                                email: r.email,
+                                employee_id: r.employee_id,
+                                phone: r.phone ?? "",
+                                department: r.department ?? "",
+                                role: r.role,
+                                assigned_admin_id: r.assigned_admin_id ?? "",
+                              })
+                            }
+                          >
+                            <Pencil className="h-4 w-4" />
+                          </IconButton>
+                          <IconButton
+                            label="Send password reset email"
+                            disabled={pending || !r.is_active}
+                            onClick={() => confirm(`Email a password reset link to ${r.email}?`) && run(() => sendPasswordReset(r.id))}
+                          >
+                            <KeyRound className="h-4 w-4" />
+                          </IconButton>
+                          <IconButton
+                            label={r.is_active ? "Deactivate" : "Activate"}
+                            disabled={pending || r.id === meId}
+                            danger={r.is_active}
+                            onClick={() =>
+                              confirm(r.is_active ? `Deactivate ${r.full_name}? They will be signed out of all data immediately.` : `Reactivate ${r.full_name}?`) &&
+                              run(() => setUserActive(r.id, !r.is_active))
+                            }
+                          >
+                            <Power className="h-4 w-4" />
+                          </IconButton>
+                        </div>
+                      </Td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            </div>
+          </>
         )}
       </Card>
       {editing && <UserFormDialog key={editing.id ?? "new"} open onClose={() => setEditing(null)} initial={editing} admins={admins} />}

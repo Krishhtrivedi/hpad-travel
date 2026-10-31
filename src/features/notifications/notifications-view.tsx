@@ -22,13 +22,15 @@ export async function NotificationsView({ profile }: { profile: Profile }) {
           <ul className="divide-y divide-line">
             {items.map((n) => {
               const body = (
-                <div className="flex items-start gap-3 px-5 py-4">
-                  <span className={cn("mt-1.5 h-2 w-2 shrink-0 rounded-full", n.is_read ? "bg-transparent" : "bg-accent")} aria-label={n.is_read ? undefined : "Unread"} />
-                  <div className="min-w-0 flex-1">
-                    <p className={cn("text-sm text-ink", !n.is_read && "font-semibold")}>{n.title}</p>
-                    <p className="mt-0.5 text-sm text-muted">{n.message}</p>
+                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-1 sm:gap-3 p-4 sm:px-5 sm:py-4">
+                  <div className="flex items-start gap-2.5 min-w-0 flex-1">
+                    <span className={cn("mt-1.5 h-2 w-2 shrink-0 rounded-full", n.is_read ? "bg-transparent" : "bg-accent")} aria-label={n.is_read ? undefined : "Unread"} />
+                    <div className="min-w-0 flex-1">
+                      <p className={cn("text-sm text-ink", !n.is_read && "font-semibold")}>{n.title}</p>
+                      <p className="mt-0.5 text-xs sm:text-sm text-muted break-words">{n.message}</p>
+                    </div>
                   </div>
-                  <time className="shrink-0 text-xs text-muted">{formatDateTime(n.created_at)}</time>
+                  <time className="shrink-0 text-[11px] sm:text-xs text-muted pl-4.5 sm:pl-0 font-mono">{formatDateTime(n.created_at)}</time>
                 </div>
               );
               return (

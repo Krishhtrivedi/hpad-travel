@@ -33,7 +33,7 @@ export function BrandLogo({
   const isLight = variant === "light";
 
   return (
-    <div className={cn("inline-flex items-center gap-3", className)}>
+    <div className={cn("inline-flex items-center gap-2.5 sm:gap-3 shrink-0 select-none", className)}>
       <div className="relative flex items-center justify-center transition-transform duration-300 hover:scale-[1.03]">
         <HpadMarkSvg
           className={cn(
@@ -47,7 +47,7 @@ export function BrandLogo({
       <div className="flex flex-col text-left">
         <span
           className={cn(
-            "font-mono text-xs font-semibold tracking-[0.2em] uppercase leading-none transition-colors duration-300",
+            "font-mono text-xs font-semibold tracking-[0.2em] uppercase leading-none whitespace-nowrap transition-colors duration-300",
             isLight
               ? "text-white/95"
               : "text-[#2A2230] dark:text-[#F4F9FD]"

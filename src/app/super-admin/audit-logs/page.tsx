@@ -68,36 +68,63 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ p
         {logs.length === 0 ? (
           <EmptyState title="No activity recorded" />
         ) : (
-          <Table>
-            <thead>
-              <tr>
-                <Th>When</Th>
-                <Th>Who</Th>
-                <Th>Action</Th>
-                <Th>Details</Th>
-              </tr>
-            </thead>
-            <tbody>
+          <>
+            <div className="divide-y divide-line md:hidden">
               {logs.map((l) => (
-                <tr key={l.id}>
-                  <Td className="whitespace-nowrap text-muted">{formatDateTime(l.created_at)}</Td>
-                  <Td>{l.actor_name ?? <span className="text-muted">System</span>}</Td>
-                  <Td>
+                <div key={l.id} className="p-4 space-y-2">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="font-medium text-ink text-sm">
+                      {l.actor_name ?? <span className="text-muted">System</span>}
+                    </span>
                     <Badge>{l.action.replace(/_/g, " ")}</Badge>
-                  </Td>
-                  <Td>
+                  </div>
+                  <p className="text-xs text-muted font-mono">{formatDateTime(l.created_at)}</p>
+                  <div className="text-xs text-ink border-t border-line/40 pt-1.5">
                     {l.entity_type === "travel_request" && l.entity_id ? (
-                      <Link href={`/super-admin/requests/${l.entity_id}`} className="text-brand hover:underline">
+                      <Link href={`/super-admin/requests/${l.entity_id}`} className="text-brand hover:underline font-medium">
                         {describe(l) || "View request"}
                       </Link>
                     ) : (
                       describe(l)
                     )}
-                  </Td>
-                </tr>
+                  </div>
+                </div>
               ))}
-            </tbody>
-          </Table>
+            </div>
+
+            <div className="hidden md:block">
+              <Table>
+                <thead>
+                  <tr>
+                    <Th>When</Th>
+                    <Th>Who</Th>
+                    <Th>Action</Th>
+                    <Th>Details</Th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {logs.map((l) => (
+                    <tr key={l.id}>
+                      <Td className="whitespace-nowrap text-muted">{formatDateTime(l.created_at)}</Td>
+                      <Td>{l.actor_name ?? <span className="text-muted">System</span>}</Td>
+                      <Td>
+                        <Badge>{l.action.replace(/_/g, " ")}</Badge>
+                      </Td>
+                      <Td>
+                        {l.entity_type === "travel_request" && l.entity_id ? (
+                          <Link href={`/super-admin/requests/${l.entity_id}`} className="text-brand hover:underline">
+                            {describe(l) || "View request"}
+                          </Link>
+                        ) : (
+                          describe(l)
+                        )}
+                      </Td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            </div>
+          </>
         )}
         <Pagination page={page} pages={Math.max(1, Math.ceil((count ?? 0) / PAGE))} total={count ?? 0} pageSize={PAGE} basePath="/super-admin/audit-logs" params={{ action }} />
       </Card>

@@ -197,11 +197,11 @@ export function ReportBuilder({ employees }: { employees: { id: string; label: s
 
         {msg && <Alert tone={msg.tone}>{msg.text}</Alert>}
 
-        <div className="flex flex-wrap gap-2">
-          <Button onClick={() => run("xlsx")} loading={busy === "xlsx"} disabled={!!busy}>
+        <div className="flex flex-col sm:flex-row gap-2.5">
+          <Button onClick={() => run("xlsx")} loading={busy === "xlsx"} disabled={!!busy} className="w-full sm:w-auto justify-center">
             <FileSpreadsheet className="h-4 w-4" /> Download Excel
           </Button>
-          <Button variant="secondary" onClick={() => run("pdf")} loading={busy === "pdf"} disabled={!!busy}>
+          <Button variant="secondary" onClick={() => run("pdf")} loading={busy === "pdf"} disabled={!!busy} className="w-full sm:w-auto justify-center">
             <FileText className="h-4 w-4" /> Download PDF
           </Button>
         </div>
