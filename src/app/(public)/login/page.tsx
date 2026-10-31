@@ -13,8 +13,10 @@ export default async function LoginPage({
   const { next, error } = await searchParams;
   return (
     <>
-      <h1 className="text-xl font-semibold text-ink">Sign in</h1>
-      <p className="mt-1 text-sm text-muted">Use your company email and password.</p>
+      <div className="mb-6">
+        <h1 className="text-xl font-semibold tracking-tight text-ink">Sign in to your account</h1>
+        <p className="mt-1 text-xs text-muted">Use your company email and password to continue.</p>
+      </div>
       <LoginForm next={next} initialError={error ? ERRORS[error] : undefined} />
     </>
   );
