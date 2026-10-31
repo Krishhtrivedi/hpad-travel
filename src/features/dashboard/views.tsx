@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { CheckCircle2, ClipboardList, Clock, FilePlus2, PlaneTakeoff, ShieldCheck, Users, XCircle, CalendarClock } from "lucide-react";
 import { AdminPerformanceChart, DonutChart, MonthlyTrendChart } from "@/components/charts/charts";
 import { Alert, ButtonLink, Card, CardBody, CardHeader, PageHeader, StatCard } from "@/components/ui";
@@ -40,7 +41,7 @@ export async function SuperAdminDashboard({ profile }: { profile: Profile }) {
         <StatCard label="Pending requests" value={s.pending} icon={<Clock className="h-5 w-5" />} tone="warning" href={`${base}/requests/pending`} />
         <StatCard label="Approved requests" value={s.approved} icon={<CheckCircle2 className="h-5 w-5" />} tone="success" href={`${base}/requests/approved`} />
         <StatCard label="Rejected requests" value={s.rejected} icon={<XCircle className="h-5 w-5" />} tone="danger" href={`${base}/requests/rejected`} />
-        <StatCard label="Currently on approved travel" value={s.currently_travelling} icon={<PlaneTakeoff className="h-5 w-5" />} tone="info" hint="Trip dates include today" />
+        <StatCard label="Currently on approved travel" value={s.currently_travelling} icon={<PlaneTakeoff className="h-5 w-5" />} tone="info" href={`${base}/requests/travelling`} hint="Trip dates include today" />
         <StatCard label="Upcoming approved travel" value={s.upcoming} icon={<CalendarClock className="h-5 w-5" />} hint="Departing after today" />
       </div>
 
@@ -70,7 +71,7 @@ export async function SuperAdminDashboard({ profile }: { profile: Profile }) {
       </div>
 
       <div className="mt-6 grid gap-6 xl:grid-cols-2">
-        <RequestMiniList title="Currently on approved travel" description="Approved trips whose dates include today" rows={current} detailBase={`${base}/requests`} mode="current" emptyText="Nobody is on approved travel today" />
+        <RequestMiniList title="Currently on approved travel" description="Approved trips whose dates include today" rows={current} detailBase={`${base}/requests`} viewAllHref={`${base}/requests/travelling`} mode="current" emptyText="Nobody is on approved travel today" />
         <RequestMiniList title="Upcoming approved travel" rows={upcoming} detailBase={`${base}/requests`} mode="upcoming" emptyText="No upcoming approved trips" />
       </div>
     </>
@@ -88,6 +89,16 @@ export async function AdminDashboard({ profile }: { profile: Profile }) {
         actions={<ButtonLink href={`${base}/requests/pending`}>Review pending ({s.pending})</ButtonLink>}
       />
       {error && <Alert tone="danger" className="mb-6">Could not load statistics: {error}</Alert>}
+      {s.currently_travelling > 0 && (
+        <Alert tone="info" className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <span>
+            <strong>{s.currently_travelling}</strong> assigned employee{s.currently_travelling === 1 ? " is" : "s are"} on official travel outside Ahmedabad today.
+          </span>
+          <Link href={`${base}/requests/travelling`} className="font-semibold underline hover:text-ink text-xs font-mono uppercase tracking-wider shrink-0">
+            View travelling employees →
+          </Link>
+        </Alert>
+      )}
       {s.pending > 0 && (
         <Alert tone="warning" className="mb-6">
           You have {s.pending} request{s.pending === 1 ? "" : "s"} waiting for a decision.
@@ -100,7 +111,7 @@ export async function AdminDashboard({ profile }: { profile: Profile }) {
         <StatCard label="Upcoming approved travel" value={s.upcoming} icon={<CalendarClock className="h-5 w-5" />} />
         <StatCard label="Approved" value={s.approved} icon={<CheckCircle2 className="h-5 w-5" />} tone="success" href={`${base}/requests/approved`} />
         <StatCard label="Rejected" value={s.rejected} icon={<XCircle className="h-5 w-5" />} tone="danger" href={`${base}/requests/rejected`} />
-        <StatCard label="Currently on approved travel" value={s.currently_travelling} icon={<PlaneTakeoff className="h-5 w-5" />} tone="info" />
+        <StatCard label="Currently on approved travel" value={s.currently_travelling} icon={<PlaneTakeoff className="h-5 w-5" />} tone="info" href={`${base}/requests/travelling`} hint="Trip dates include today" />
       </div>
 
       <div className="mt-6 grid gap-6 xl:grid-cols-3">
@@ -120,7 +131,7 @@ export async function AdminDashboard({ profile }: { profile: Profile }) {
 
       <div className="mt-6 grid gap-6 xl:grid-cols-3">
         <RequestMiniList title="Recent requests" rows={recent} detailBase={`${base}/requests`} viewAllHref={`${base}/history`} emptyText="No requests yet" />
-        <RequestMiniList title="On approved travel now" rows={current} detailBase={`${base}/requests`} mode="current" emptyText="Nobody is travelling today" />
+        <RequestMiniList title="Travelling today" description="Employees travelling today" rows={current} detailBase={`${base}/requests`} viewAllHref={`${base}/requests/travelling`} mode="current" emptyText="Nobody is travelling today" />
         <RequestMiniList title="Upcoming approved travel" rows={upcoming} detailBase={`${base}/requests`} mode="upcoming" emptyText="No upcoming trips" />
       </div>
     </>

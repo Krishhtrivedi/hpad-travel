@@ -18,6 +18,7 @@ export interface RequestsViewProps {
   statuses?: RequestStatus[];
   includeDrafts?: boolean;
   submittedSince?: string;
+  travellingToday?: boolean;
   /** "history" uses the travel-history column set from the spec */
   variant?: "list" | "history";
   actions?: React.ReactNode;
@@ -33,6 +34,7 @@ export async function RequestsView({
   statuses,
   includeDrafts,
   submittedSince,
+  travellingToday,
   variant = "list",
   actions,
   emptyAction,
@@ -42,7 +44,8 @@ export async function RequestsView({
     statuses,
     includeDrafts,
     submittedSince,
-    defaultSort: variant === "history" ? "departure_date" : "submitted_at",
+    travellingToday,
+    defaultSort: variant === "history" ? "departure_date" : travellingToday ? "return_date" : "submitted_at",
   });
 
   const isEmployee = profile.role === "employee";
@@ -61,7 +64,7 @@ export async function RequestsView({
     admins = (data ?? []).filter((p) => p.role === "admin").map((p) => ({ id: p.id, label: p.full_name }));
   }
 
-  const showStatus = !statuses || statuses.length !== 1;
+  const showStatus = !travellingToday && (!statuses || statuses.length !== 1);
   const params = searchParams as Record<string, string | undefined>;
   const detailBase = `${homeFor(profile.role)}/requests`;
   const sortProps = { sort: result.sort, dir: result.dir, basePath, params };

@@ -1,7 +1,7 @@
 import "server-only";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { RequestStatus, TravelRequest } from "@/lib/types";
-import { sanitizeSearch } from "@/lib/utils";
+import { sanitizeSearch, todayIST } from "@/lib/utils";
 
 export const PAGE_SIZE = 15;
 
@@ -75,13 +75,21 @@ export function applyFilters(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   query: any,
   f: RequestFilters,
-  scope: { statuses?: RequestStatus[]; includeDrafts?: boolean; submittedSince?: string } = {},
+  scope: { statuses?: RequestStatus[]; includeDrafts?: boolean; submittedSince?: string; travellingToday?: boolean } = {},
 ) {
   let q = query;
   const status = f.status as RequestStatus | undefined;
-  if (scope.statuses?.length) q = q.in("status", scope.statuses);
-  else if (status && ["draft", "pending", "approved", "rejected"].includes(status)) q = q.eq("status", status);
-  else if (!scope.includeDrafts) q = q.neq("status", "draft");
+
+  if (scope.travellingToday) {
+    const today = todayIST();
+    q = q.eq("status", "approved").lte("departure_date", today).gte("return_date", today);
+  } else if (scope.statuses?.length) {
+    q = q.in("status", scope.statuses);
+  } else if (status && ["draft", "pending", "approved", "rejected"].includes(status)) {
+    q = q.eq("status", status);
+  } else if (!scope.includeDrafts) {
+    q = q.neq("status", "draft");
+  }
 
   if (scope.submittedSince) q = q.gte("submitted_at", scope.submittedSince);
 
@@ -112,7 +120,7 @@ export function applyFilters(
 export async function fetchRequests(
   supabase: SupabaseClient,
   f: RequestFilters,
-  scope: { statuses?: RequestStatus[]; includeDrafts?: boolean; submittedSince?: string; defaultSort?: string } = {},
+  scope: { statuses?: RequestStatus[]; includeDrafts?: boolean; submittedSince?: string; defaultSort?: string; travellingToday?: boolean } = {},
 ) {
   const page = Math.max(1, Number(f.page) || 1);
   const sort = f.sort && SORTABLE.has(f.sort) ? f.sort : scope.defaultSort ?? "submitted_at";

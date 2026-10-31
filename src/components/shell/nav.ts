@@ -9,6 +9,7 @@ import {
   History,
   Inbox,
   LayoutDashboard,
+  PlaneTakeoff,
   ScrollText,
   Settings,
   ShieldCheck,
@@ -44,6 +45,7 @@ export const NAV: Record<Role, NavGroup[]> = {
       label: "Travel requests",
       items: [
         { href: "/super-admin/requests", label: "All Requests", icon: ClipboardList, exact: true },
+        { href: "/super-admin/requests/travelling", label: "Travelling Today", icon: PlaneTakeoff },
         { href: "/super-admin/requests/pending", label: "Pending", icon: Clock },
         { href: "/super-admin/requests/approved", label: "Approved", icon: CheckCircle2 },
         { href: "/super-admin/requests/rejected", label: "Rejected", icon: XCircle },
@@ -68,6 +70,7 @@ export const NAV: Record<Role, NavGroup[]> = {
       items: [
         { href: "/admin/requests/new", label: "New Requests", icon: Inbox },
         { href: "/admin/requests/pending", label: "Pending Approvals", icon: Clock },
+        { href: "/admin/requests/travelling", label: "Travelling Today", icon: PlaneTakeoff },
         { href: "/admin/requests/approved", label: "Approved", icon: CheckCircle2 },
         { href: "/admin/requests/rejected", label: "Rejected", icon: XCircle },
         { href: "/admin/history", label: "Travel History", icon: History },
