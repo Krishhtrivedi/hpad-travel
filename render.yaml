@@ -9,6 +9,8 @@ services:
     envVars:
       - key: NODE_VERSION
         value: 20
+      - key: NODE_OPTIONS
+        value: "--max-old-space-size=450"
       - key: NEXT_PUBLIC_SUPABASE_URL
         value: https://qkzztjwjzdohmskooydg.supabase.co
       - key: NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
