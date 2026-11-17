@@ -10,7 +10,7 @@ import { passwordSchema } from "@/lib/validation";
 import type { ActionResult, Role } from "@/lib/types";
 
 const loginSchema = z.object({
-  email: z.email("Enter a valid email address").trim().toLowerCase(),
+  email: z.string().min(1, "Enter your email address or employee ID").trim(),
   password: z.string().min(1, "Enter your password"),
   next: z.string().optional(),
 });
@@ -19,34 +19,89 @@ export async function signIn(_: ActionResult | null, formData: FormData): Promis
   const parsed = loginSchema.safeParse(Object.fromEntries(formData));
   if (!parsed.success) return { ok: false, error: parsed.error.issues[0].message };
 
+  let emailToUse = parsed.data.email.toLowerCase();
+
   const supabase = await createClient();
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email: parsed.data.email,
-    password: parsed.data.password,
-  });
-  if (error || !data.user) {
-    // Supabase Auth rate-limits repeated failures; keep the message generic.
+
+  // If the user entered an Employee ID / User ID (e.g. HPAD-001 or karan) instead of a full email
+  if (!emailToUse.includes("@")) {
+    try {
+      const { data: matched } = await supabase
+        .from("profiles")
+        .select("email")
+        .ilike("employee_id", parsed.data.email)
+        .maybeSingle();
+
+      if (matched?.email) {
+        emailToUse = matched.email;
+      } else {
+        emailToUse = `${parsed.data.email.toLowerCase()}@hpad.com`;
+      }
+    } catch {
+      // If profile query fails, try falling back to company email format
+      emailToUse = `${parsed.data.email.toLowerCase()}@hpad.com`;
+    }
+  }
+
+  try {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: emailToUse,
+      password: parsed.data.password,
+    });
+
+    if (error || !data.user) {
+      const msg = error?.message?.toLowerCase() ?? "";
+      if (
+        msg.includes("fetch") ||
+        msg.includes("network") ||
+        msg.includes("enotfound") ||
+        msg.includes("connection") ||
+        error?.status === 503 ||
+        error?.status === 502
+      ) {
+        return {
+          ok: false,
+          error: "Database is paused or temporarily unreachable. Please restore your Supabase project from the Supabase dashboard.",
+        };
+      }
+      return {
+        ok: false,
+        error: error?.status === 429 ? "Too many attempts. Please wait a few minutes." : "Incorrect email or password.",
+      };
+    }
+
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("role, is_active")
+      .eq("auth_user_id", data.user.id)
+      .maybeSingle();
+
+    if (!profile || !profile.is_active) {
+      await supabase.auth.signOut();
+      return { ok: false, error: "Your account is not active. Please contact the Super Admin." };
+    }
+
+    const home = homeFor(profile.role as Role);
+    const next = parsed.data.next;
+    // Only follow `next` if it is a local path inside this user's own area.
+    redirect(next && next.startsWith(home) && !next.startsWith("//") ? next : home);
+  } catch (err: unknown) {
+    // If Next.js redirect threw, rethrow it so navigation proceeds
+    if (err && typeof err === "object" && "digest" in err) {
+      throw err;
+    }
+    const errMsg = err instanceof Error ? err.message : String(err);
+    if (errMsg.includes("fetch failed") || errMsg.includes("ENOTFOUND")) {
+      return {
+        ok: false,
+        error: "Database is paused on Supabase. Please open your Supabase dashboard and click 'Restore project'.",
+      };
+    }
     return {
       ok: false,
-      error: error?.status === 429 ? "Too many attempts. Please wait a few minutes." : "Incorrect email or password.",
+      error: "Unable to connect to authentication service. Please check Supabase project status.",
     };
   }
-
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("role, is_active")
-    .eq("auth_user_id", data.user.id)
-    .maybeSingle();
-
-  if (!profile || !profile.is_active) {
-    await supabase.auth.signOut();
-    return { ok: false, error: "Your account is not active. Please contact the Super Admin." };
-  }
-
-  const home = homeFor(profile.role as Role);
-  const next = parsed.data.next;
-  // Only follow `next` if it is a local path inside this user's own area.
-  redirect(next && next.startsWith(home) && !next.startsWith("//") ? next : home);
 }
 
 export async function signOut() {

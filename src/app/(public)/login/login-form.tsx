@@ -16,19 +16,23 @@ export function LoginForm({ next, initialError }: { next?: string; initialError?
       {error && <Alert tone="danger">{error}</Alert>}
       <input type="hidden" name="next" value={next ?? ""} />
 
-      {/* Email field */}
-      <Field label="Email address" htmlFor="email">
+      {/* Email / User ID field */}
+      <Field label="Email or Employee ID" htmlFor="email">
         <div className="relative">
           <Mail className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted/70" />
           <Input
             id="email"
             name="email"
-            type="email"
-            autoComplete="email"
-            placeholder="name@hpad.com"
+            type="text"
+            inputMode="email"
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck={false}
+            autoComplete="username"
+            placeholder="name@hpad.com or HPAD-001"
             required
             autoFocus
-            className="pl-10"
+            className="pl-10 touch-manipulation"
           />
         </div>
       </Field>
@@ -44,12 +48,12 @@ export function LoginForm({ next, initialError }: { next?: string; initialError?
             autoComplete="current-password"
             placeholder="••••••••"
             required
-            className="pl-10 pr-10"
+            className="pl-10 pr-10 touch-manipulation"
           />
           <button
             type="button"
             onClick={() => setShow((s) => !s)}
-            className="absolute inset-y-0 right-0 flex w-10 items-center justify-center text-muted hover:text-ink transition-colors focus:outline-none"
+            className="absolute inset-y-0 right-0 flex w-10 items-center justify-center text-muted hover:text-ink transition-colors focus:outline-none touch-manipulation"
             aria-label={show ? "Hide password" : "Show password"}
           >
             {show ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -69,7 +73,12 @@ export function LoginForm({ next, initialError }: { next?: string; initialError?
       </div>
 
       {/* Sign in button */}
-      <Button type="submit" className="w-full justify-center shadow-xs hover:shadow transition-all mt-1" size="lg" loading={pending}>
+      <Button
+        type="submit"
+        className="w-full justify-center shadow-xs hover:shadow transition-all mt-1 touch-manipulation"
+        size="lg"
+        loading={pending}
+      >
         Sign in
       </Button>
     </form>
